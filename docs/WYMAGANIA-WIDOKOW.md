@@ -1,23 +1,38 @@
 # Wymagania widoków (Blade)
 
-Lista wszystkich plików HTML/Blade, które trzeba przygotować, wraz z tym, co ma się w nich znaleźć.
+Lista plików HTML/Blade do przygotowania i tego, co ma się w nich znaleźć.
 Zaznaczaj `[x]` przy gotowych widokach.
 
 > **Gdzie zapisać pliki:** `resources/views/` — nazwa z kropkami odpowiada ścieżce,
-> np. `shop.home` → `resources/views/shop/home.blade.php`.
+> np. `shop.products.index` → `resources/views/shop/products/index.blade.php`.
 >
-> **Ważne:** każdy widok z tej listy jest wywoływany przez kontroler — brak pliku = błąd na stronie.
-> Maile nie wymagają widoków (korzystają z wbudowanego szablonu Laravela).
+> **Ważne:** każdy widok z listy jest wywoływany przez kontroler — brak pliku = błąd na stronie.
 
-**Podsumowanie:** 35 plików
+**Razem: 20 plików** — 2 layouty, 4 sklep, 2 logowanie, 2 zamówienia klienta, 10 panel admina.
 
-| Sekcja | Liczba |
+---
+
+## Wymagania z przedmiotu → gdzie są w projekcie
+
+| Wymaganie | Realizacja |
 |---|---|
-| Layouty i elementy wspólne | 3 (w tym 1 opcjonalny) |
-| Sklep | 7 |
-| Logowanie i rejestracja | 4 |
-| Konto klienta | 7 |
-| Panel administracyjny | 14 |
+| Rejestracja i logowanie oparte o bazę, szyfrowanie hasła | `RegisterController`, `LoginController`; hasło hashowane bcryptem (cast `'password' => 'hashed'` w `User`) |
+| Dodawanie użytkowników (rejestracja lub administrator) | `/register` oraz panel admina → Użytkownicy → Dodaj |
+| Min. dwa poziomy uprawnień | 3 role: `customer` (klient), `moderator`, `admin` — `App\Enums\UserRole`, middleware `role:...` |
+| Różne strony po zalogowaniu zależnie od roli | `User::homeRoute()`: admin → pulpit admina, moderator → produkty w panelu, klient → sklep |
+| CRUD użytkowników w panelu admina | `Admin\UserController` — lista, podgląd, dodawanie, edycja, usuwanie |
+| Walidacja formularzy | Form Requesty: `RegisterRequest`, `LoginRequest`, `UserRequest`, `ProductRequest`, `CheckoutRequest` |
+| Koszyk (sesja) | `CartService` — koszyk trzymany w sesji jako `[id_produktu => ilość]` |
+| Dodawanie i usuwanie produktów (moderator, administrator) | `Admin\ProductController`, trasy z `role:admin,moderator` |
+| Zamawianie produktów (klient) | `CheckoutController` + `OrderService` (zapis zamówienia, zmniejszenie stanów) |
+
+**Konta demo** (po `php artisan migrate:fresh --seed`), hasło do wszystkich: `password`
+
+| E-mail | Rola |
+|---|---|
+| `admin@example.com` | administrator |
+| `moderator@example.com` | moderator |
+| `customer@example.com` | klient |
 
 ---
 
@@ -26,433 +41,231 @@ Zaznaczaj `[x]` przy gotowych widokach.
 | Potrzebujesz | Użyj |
 |---|---|
 | Wyświetlić kwotę | `@money($product->price)` → `1,299.99 PLN` |
-| Wstawić kwotę do pola formularza (admin) | `\App\Support\Money::toDecimal($product->price)` → `1299.99` |
-| Nazwę statusu / metody | `$order->status->label()`, `$order->payment_method->label()` |
-| Adres zdjęcia | `$image->url`, `$product->mainImage?->url` |
+| Nazwę roli / statusu | `$user->role->label()`, `$order->status->label()` |
+| Sprawdzić rolę w widoku | `auth()->user()->isAdmin()`, `->isModerator()`, `->canManageProducts()` |
+| Zdjęcie produktu | `$product->image_url` (może być `null` — pokaż wtedy zaślepkę) |
 | Paginację | `{{ $products->links() }}` |
-| Komunikaty po akcjach | `session('success')`, `session('warning')`, `session('error')`, `session('status')` |
+| Komunikaty po akcjach | `session('success')`, `session('error')` |
 | Błędy walidacji | `@error('pole') ... @enderror`, `old('pole')` |
 
 Każdy formularz `POST/PUT/PATCH/DELETE` musi mieć `@csrf`, a `PUT/PATCH/DELETE` dodatkowo `@method('...')`.
-Dokładne nazwy tras i pól są też w `docs/VIEWS.md`.
 
 ---
 
-## 0. Layouty i elementy wspólne
-
-Zrób je jako pierwsze — pozostałe widoki będą je rozszerzać (`@extends` lub komponenty).
+## 1. Layouty
 
 ### [ ] `layouts/app.blade.php` — layout sklepu
 
-Dostępne zmienne (dostarczane automatycznie): `$cartCount`, `$navigationCategories`
+Zmienna dostępna automatycznie: `$cartCount` (liczba sztuk w koszyku).
 
-- **Nagłówek**
-  - logo z linkiem do `route('home')`
-  - wyszukiwarka: formularz `GET route('products.index')`, pole `search`
-  - menu kategorii z `$navigationCategories` (każda ma `children`), link: `route('categories.show', $category)`
-  - ikona koszyka z licznikiem `$cartCount` → `route('cart.index')`
-  - dla gości: „Zaloguj się” (`login`), „Załóż konto” (`register`)
-  - dla zalogowanych: „Moje konto” (`account.dashboard`), „Wyloguj” (formularz `POST logout`)
-  - dla administratora dodatkowo: link „Panel admina” (`admin.dashboard`)
-- **Komunikaty flash** nad treścią: `success`, `warning`, `error`
-- **Treść strony** (`@yield('content')` lub `{{ $slot }}`)
-- **Stopka**
+- logo / nazwa sklepu → `route('products.index')`
+- link do koszyka z licznikiem `$cartCount` → `route('cart.index')`
+- **gość:** „Zaloguj się” (`login`), „Zarejestruj się” (`register`)
+- **zalogowany:** imię użytkownika, „Moje zamówienia” (`account.orders.index`), „Wyloguj” (formularz `POST logout`)
+- **moderator lub admin** (`canManageProducts()`): link „Panel” → `admin.products.index` (admin: `admin.dashboard`)
+- komunikaty `success` / `error`
+- treść strony (`@yield('content')`)
 
 ### [ ] `layouts/admin.blade.php` — layout panelu
 
-- **Menu boczne:** Dashboard, Kategorie, Produkty, Zamówienia, Kody rabatowe, Użytkownicy, Opinie
+- menu zależne od roli:
+  - **admin:** Pulpit (`admin.dashboard`), Produkty (`admin.products.index`), Użytkownicy (`admin.users.index`), Zamówienia (`admin.orders.index`)
+  - **moderator:** tylko Produkty
 - link „Wróć do sklepu” i „Wyloguj”
-- komunikaty flash: `success`, `warning`, `error`
+- komunikaty `success` / `error`
 - treść strony
-
-### [ ] `partials/product-card.blade.php` — kafelek produktu *(opcjonalny, ale zalecany)*
-
-Używany na stronie głównej, liście produktów, w kategorii, liście życzeń i produktach powiązanych.
-
-- zdjęcie (`$product->mainImage?->url`) z linkiem do `route('products.show', $product)`
-- nazwa produktu
-- cena `@money($product->price)`
-- jeśli `$product->isOnSale()`: cena przekreślona `@money($product->compare_at_price)` i znaczek `-{{ $product->discountPercent() }}%`
-- ocena: `$product->rating_avg` (gwiazdki) i `$product->rating_count`
-- jeśli `! $product->isInStock()`: napis „Brak w magazynie”
-- przycisk „Dodaj do koszyka” (formularz `POST cart.items.store`, ukryte pole `product_id`)
 
 ---
 
-## 1. Sklep
+## 2. Sklep
 
-### [ ] `shop/home.blade.php` — strona główna
+### [ ] `shop/products/index.blade.php` — lista produktów (strona główna)
 
-Zmienne: `$featuredProducts`, `$newProducts`, `$saleProducts`, `$categories`
+Zmienne: `$products` (paginacja), `$search`
 
-- baner / sekcja powitalna
-- kafelki kategorii głównych (`$categories`, liczba produktów: `$category->products_count`)
-- sekcja **Polecane** — `$featuredProducts`
-- sekcja **Nowości** — `$newProducts`
-- sekcja **Promocje** — `$saleProducts`
-
-### [ ] `shop/products/index.blade.php` — lista produktów
-
-Zmienne: `$products` (paginacja), `$filters`, `$sorts`, `$categories`
-
-- **Panel filtrów** (formularz `GET`, wartości z `$filters`):
-  - kategorie (`$categories` z `children`) — pole `category` (slug)
-  - cena od / do — pola `min_price`, `max_price`
-  - checkbox „tylko dostępne” — pole `in_stock`
-- **Sortowanie** — pole `sort`: `newest`, `price_asc`, `price_desc`, `name`, `popular`
-- liczba wyników (`$products->total()`)
-- siatka kafelków produktów
+- wyszukiwarka: formularz `GET route('products.index')`, pole `search`
+- siatka produktów — dla każdego:
+  - zdjęcie (`image_url`), nazwa (link `route('products.show', $product)`), cena `@money(...)`
+  - „Brak w magazynie”, gdy `! $product->isInStock()`
+  - przycisk „Dodaj do koszyka” — formularz `POST route('cart.store', $product)`
 - paginacja
-- komunikat, gdy brak wyników
+- komunikat, gdy brak produktów
 
-### [ ] `shop/categories/show.blade.php` — strona kategorii
+### [ ] `shop/products/show.blade.php` — szczegóły produktu
 
-Zmienne: `$category`, `$breadcrumbs`, `$products`, `$filters`, `$sorts`
+Zmienne: `$product`
 
-- breadcrumbs (`$breadcrumbs` — lista kategorii od głównej do bieżącej)
-- nazwa i opis kategorii
-- linki do podkategorii (`$category->children`)
-- filtry cenowe, „tylko dostępne” i sortowanie (bez wyboru kategorii)
-- siatka produktów + paginacja
-
-### [ ] `shop/products/show.blade.php` — karta produktu
-
-Zmienne: `$product`, `$breadcrumbs`, `$reviews`, `$relatedProducts`, `$canReview`, `$inWishlist`
-
-- breadcrumbs
-- **galeria zdjęć** (`$product->images`)
-- nazwa, SKU, średnia ocena (`$product->rating_avg`)
-- cena, cena przekreślona i procent rabatu (jeśli promocja)
-- stan magazynowy: „Dostępny (X szt.)” lub „Brak w magazynie”
-- **formularz „Dodaj do koszyka”** — `POST cart.items.store`, pola `product_id`, `quantity`
-- **„Dodaj do listy życzeń” / „Usuń z listy życzeń”** — tylko dla zalogowanych, zależnie od `$inWishlist`; `POST account.wishlist.toggle` (parametr: `$product->id`)
-- krótki opis (`short_description`) i pełny opis (`description`)
-- **opinie** — `$reviews` z paginacją (autor: `$review->user->name`, ocena, tytuł, treść, data)
-- **formularz opinii** — tylko gdy `$canReview`; `POST products.reviews.store`, pola `rating` (1–5), `title`, `body`
-- **produkty powiązane** — `$relatedProducts`
+- zdjęcie, nazwa, cena, opis
+- stan magazynowy (np. „Dostępne: 7 szt.” / „Brak w magazynie”)
+- formularz „Dodaj do koszyka”: `POST route('cart.store', $product)`, pole `quantity`
+- błąd `@error('quantity')` (np. „Only 2 of X available.”)
 
 ### [ ] `shop/cart/index.blade.php` — koszyk
 
-Zmienne: `$summary`, `$warnings`
+Zmienne: `$items`, `$total`
 
-- ostrzeżenia z `$warnings` (np. „ilość zmniejszona do stanu magazynowego”)
-- gdy `$summary->isEmpty()`: komunikat „Koszyk jest pusty” i link do sklepu
-- **tabela pozycji** (`$summary->items`, każda ma `->product`):
-  - zdjęcie, nazwa (link do produktu)
-  - cena jednostkowa
-  - pole ilości — `PATCH cart.items.update` (parametr: `$item->product_id`), pole `quantity` (0 = usuń)
-  - wartość pozycji `@money($item->total())`
-  - przycisk „Usuń” — `DELETE cart.items.destroy`
-- przycisk „Opróżnij koszyk” — `DELETE cart.clear`
-- **kod rabatowy:**
-  - brak kuponu: pole `code`, `POST cart.coupon.apply`
-  - jest kupon: jego kod (`$summary->coupon->code`) i przycisk „Usuń” — `DELETE cart.coupon.remove`
-  - błąd kuponu: `$summary->couponError`
-- **podsumowanie:** wartość produktów (`subtotal`), rabat (`discount`), razem (`total`)
-- „Brakuje X do darmowej dostawy” — `$summary->missingForFreeShipping()` (gdy > 0)
-- przycisk „Przejdź do kasy” → `route('checkout.create')`
+Każdy element `$items` to tablica: `$item['product']`, `$item['quantity']`, `$item['total']`.
 
-### [ ] `shop/checkout/create.blade.php` — kasa (składanie zamówienia)
+- gdy `$items` jest puste: „Koszyk jest pusty” + link do sklepu
+- tabela: nazwa produktu, cena, ilość, wartość
+  - zmiana ilości: formularz `PATCH route('cart.update', $item['product'])`, pole `quantity` (0 = usuń)
+  - usunięcie: formularz `DELETE route('cart.destroy', $item['product'])`
+- suma `@money($total)`
+- przycisk „Złóż zamówienie” → `route('checkout.create')` (gość zostanie przekierowany do logowania)
+- błąd `@error('quantity')`
 
-Zmienne: `$summary`, `$user`, `$addresses`, `$shippingMethods`, `$paymentMethods`, `$selectedShippingMethod`
+### [ ] `shop/checkout/create.blade.php` — składanie zamówienia (tylko zalogowani)
 
-Formularz `POST checkout.store`:
+Zmienne: `$items`, `$total`, `$user`
 
-- **Dane kontaktowe:** `email`, `phone` (dla zalogowanego domyślnie z `$user`)
-- **Adres dostawy:**
-  - zalogowany z adresami: wybór zapisanego adresu — pole `address_id` (lista `$addresses`)
-  - w przeciwnym razie formularz `shipping_address[...]`:
-    `first_name`, `last_name`, `company`, `tax_id`, `street`, `city`, `postal_code`, `country` (2 litery, np. PL), `phone`
-- **Dane do faktury:**
-  - checkbox `billing_same_as_shipping` (domyślnie zaznaczony)
-  - po odznaczeniu: formularz `billing_address[...]` z tymi samymi polami
-- **Metoda dostawy** — pole `shipping_method`, lista `$shippingMethods`
-  (każda pozycja: `['method' => enum, 'cost' => grosze]`, nazwa: `$item['method']->label()`, wartość: `$item['method']->value`)
-- **Metoda płatności** — pole `payment_method`, lista `$paymentMethods` (`->label()`, `->value`)
-- **Uwagi do zamówienia** — pole `notes`
-- **Akceptacja regulaminu** — checkbox `terms`
-- **Podsumowanie** (np. w bocznej kolumnie): produkty, wartość, rabat, dostawa (`$summary->shippingCost`), razem
-- przycisk „Zamawiam i płacę”
-- błąd ogólny koszyka: `@error('cart')`, błąd kuponu: `@error('code')`
+- podsumowanie koszyka: produkty, ilości, wartości, suma
+- formularz `POST route('checkout.store')` z polami:
+  - `full_name` (domyślnie `$user->name`), `phone`, `address`, `city`, `postal_code` — **wymagane**
+  - `notes` — opcjonalne uwagi
+- błędy przy polach (`@error`) i ogólny błąd `@error('cart')` (np. brak towaru)
+- przycisk „Zamawiam”
 
-### [ ] `shop/checkout/success.blade.php` — podziękowanie za zamówienie
-
-Zmienne: `$order`, `$bankAccount`
-
-- „Dziękujemy za zamówienie!” i numer `$order->number`
-- lista zamówionych produktów (`$order->items`: `product_name`, `quantity`, `total`)
-- kwoty: `subtotal`, `discount`, `shipping_cost`, `total`
-- metoda dostawy i płatności (`->label()`)
-- jeśli płatność to przelew (`$order->payment_method->value === 'bank_transfer'`):
-  dane do przelewu — `$bankAccount['name']`, `$bankAccount['number']`, tytuł: numer zamówienia
-- dla zalogowanych: link do szczegółów zamówienia (`account.orders.show`)
+Po złożeniu zamówienia klient trafia na `account/orders/show` z komunikatem `success`.
 
 ---
 
-## 2. Logowanie i rejestracja
+## 3. Logowanie i rejestracja
 
-### [ ] `auth/login.blade.php` — logowanie
+### [ ] `auth/login.blade.php`
 
-Formularz `POST login`:
+Formularz `POST route('login')`:
 - `email`, `password`, checkbox `remember`
-- link „Nie pamiętam hasła” (`password.request`) i „Załóż konto” (`register`)
-- komunikat `session('status')` (np. po resecie hasła)
+- błąd `@error('email')` (złe dane lub za dużo prób)
+- link do rejestracji
 
-### [ ] `auth/register.blade.php` — rejestracja
+### [ ] `auth/register.blade.php`
 
-Formularz `POST register`:
-- `name`, `email`, `phone` (opcjonalny), `password`, `password_confirmation`
-- checkbox `terms` (akceptacja regulaminu)
-- link „Masz już konto? Zaloguj się”
-
-### [ ] `auth/forgot-password.blade.php` — przypomnienie hasła
-
-Formularz `POST password.email`:
-- pole `email`
-- komunikat `session('status')` po wysłaniu linku
-
-### [ ] `auth/reset-password.blade.php` — ustawienie nowego hasła
-
-Zmienne: `$token`, `$email`
-
-Formularz `POST password.store`:
-- ukryte pole `token` (wartość `$token`)
-- `email` (domyślnie `$email`), `password`, `password_confirmation`
+Formularz `POST route('register')`:
+- `name`, `email`, `password`, `password_confirmation` (hasło min. 8 znaków)
+- błędy przy polach
+- link do logowania
 
 ---
 
-## 3. Konto klienta
+## 4. Zamówienia klienta
 
-Każda strona konta powinna mieć **menu konta**: Pulpit, Zamówienia, Adresy, Lista życzeń, Profil, Wyloguj.
-
-### [ ] `account/dashboard.blade.php` — pulpit
-
-Zmienne: `$user`, `$recentOrders`, `$ordersCount`, `$defaultAddress`
-
-- powitanie z imieniem
-- liczba zamówień
-- 5 ostatnich zamówień (numer, data, status, kwota, link)
-- domyślny adres (lub link „Dodaj adres”)
-
-### [ ] `account/profile.blade.php` — profil
-
-Zmienne: `$user`
-
-Trzy osobne formularze:
-1. **Dane konta** — `PUT account.profile.update`: `name`, `email`, `phone`
-2. **Zmiana hasła** — `PUT account.password.update`: `current_password`, `password`, `password_confirmation`
-3. **Usuń konto** — `DELETE account.profile.destroy`: `password` (potwierdzenie) + ostrzeżenie
-
-### [ ] `account/addresses/index.blade.php` — lista adresów
-
-Zmienne: `$addresses`
-
-- karty adresów: etykieta, imię i nazwisko (`$address->full_name`), firma, ulica, kod i miasto, kraj, telefon
-- oznaczenie adresu domyślnego (`is_default`)
-- przyciski „Edytuj” (`account.addresses.edit`) i „Usuń” (`DELETE account.addresses.destroy`)
-- przycisk „Dodaj adres” (`account.addresses.create`)
-
-### [ ] `account/addresses/create.blade.php` i [ ] `account/addresses/edit.blade.php` — formularz adresu
-
-Zmienne: `$address`
-
-- dodawanie: `POST account.addresses.store`, edycja: `PUT account.addresses.update`
-- pola: `label`, `first_name`, `last_name`, `company`, `tax_id`, `street`, `city`, `postal_code`, `country`, `phone`, checkbox `is_default`
-
-> Wskazówka: oba widoki mogą korzystać z jednego wspólnego partiala z polami formularza.
-
-### [ ] `account/orders/index.blade.php` — historia zamówień
+### [ ] `account/orders/index.blade.php` — moje zamówienia
 
 Zmienne: `$orders` (paginacja)
 
-- tabela: numer, data, liczba pozycji (`items_count`), status, płatność, kwota, link „Szczegóły”
-- paginacja
+- tabela: numer (`#{{ $order->id }}`), data, status (`->label()`), suma, link „Szczegóły” (`account.orders.show`)
 - komunikat, gdy brak zamówień
 
 ### [ ] `account/orders/show.blade.php` — szczegóły zamówienia
 
-Zmienne: `$order`, `$bankAccount`
+Zmienne: `$order` (z `items`)
 
-- numer, data, status, status płatności
-- numer przesyłki (`tracking_number`), jeśli jest
-- adres dostawy i adres do faktury (`$order->shipping_address['city']` itd.)
-- metoda dostawy i płatności
-- pozycje: zdjęcie (`$item->product?->mainImage?->url`), nazwa, cena, ilość, wartość
-- kwoty: produkty, rabat (+ kod `coupon_code`), dostawa, razem
-- dane do przelewu, jeśli płatność przelewem i nieopłacone
-- przycisk **„Anuluj zamówienie”** — tylko gdy `$order->canBeCancelledByCustomer()`; `POST account.orders.cancel`
-- przycisk **„Zamów ponownie”** — `POST account.orders.reorder`
+- numer, data, status
+- dane dostawy: `full_name`, `phone`, `address`, `postal_code`, `city`, `notes`
+- pozycje: `$item->product_name`, `$item->price`, `$item->quantity`, `$item->total()`
+- suma `@money($order->total)`
 
-### [ ] `account/wishlist.blade.php` — lista życzeń
+---
+
+## 5. Panel administracyjny
+
+### [ ] `admin/dashboard.blade.php` — pulpit (admin)
+
+Zmienne: `$usersCount`, `$productsCount`, `$ordersCount`, `$pendingOrdersCount`, `$latestOrders`
+
+- 4 kafelki ze statystykami
+- tabela 5 ostatnich zamówień (numer, klient `->user->name`, suma, status, link do `admin.orders.show`)
+
+### [ ] `admin/products/index.blade.php` — lista produktów (moderator, admin)
 
 Zmienne: `$products` (paginacja)
 
-- siatka kafelków produktów
-- przy każdym: „Usuń z listy” (`POST account.wishlist.toggle`, parametr `$product->id`) i „Dodaj do koszyka”
-- komunikat, gdy lista jest pusta
-
----
-
-## 4. Panel administracyjny
-
-Wszystkie widoki korzystają z `layouts/admin`.
-
-### [ ] `admin/dashboard.blade.php` — pulpit admina
-
-Zmienne: `$stats`, `$latestOrders`, `$lowStockProducts`, `$bestSellers`, `$salesChart`
-
-- **kafelki statystyk** (`$stats`):
-  `orders_today`, `revenue_today`, `revenue_month`, `pending_orders`, `customers`, `products`, `pending_reviews`
-- **wykres sprzedaży z 30 dni** — `$salesChart` (każdy dzień: `date`, `orders`, `revenue` w groszach)
-- tabela **ostatnich zamówień**
-- tabela **niskich stanów magazynowych** (nazwa, SKU, stan, link do edycji)
-- **bestsellery** (nazwa, `sold_quantity`)
-
-### [ ] `admin/categories/index.blade.php` — lista kategorii
-
-Zmienne: `$categories` (paginacja)
-
-- wyszukiwarka (`search`)
-- tabela: nazwa, kategoria nadrzędna (`parent?->name`), liczba produktów (`products_count`), aktywna, pozycja
-- akcje: edytuj, usuń (`DELETE admin.categories.destroy`)
-- przycisk „Dodaj kategorię”
-
-### [ ] `admin/categories/create.blade.php` i [ ] `admin/categories/edit.blade.php` — formularz kategorii
-
-Zmienne: `$category`, `$parents`
-
-- dodawanie: `POST admin.categories.store`, edycja: `PUT admin.categories.update`
-- pola: `name`, `slug` (opcjonalny — wygeneruje się sam), `parent_id` (select z `$parents`, opcja „brak”), `description`, `position`, checkbox `is_active`
-
-### [ ] `admin/products/index.blade.php` — lista produktów
-
-Zmienne: `$products` (paginacja), `$categories`
-
-- filtry: `search`, `category_id`, `status` (`active`, `inactive`, `low_stock`, `out_of_stock`, `trashed`)
-- tabela: miniatura, nazwa, SKU, kategoria, cena, stan, aktywny
-- akcje: edytuj, usuń (`DELETE admin.products.destroy`), dla produktów w koszu — przywróć (`POST admin.products.restore`)
-- przycisk „Dodaj produkt”
+- przycisk „Dodaj produkt” → `admin.products.create`
+- tabela: miniatura, nazwa, cena, stan
+- akcje: „Edytuj” (`admin.products.edit`), „Usuń” — formularz `DELETE route('admin.products.destroy', $product)` (najlepiej z `onclick="return confirm('...')"`)
 
 ### [ ] `admin/products/create.blade.php` i [ ] `admin/products/edit.blade.php` — formularz produktu
 
-Zmienne: `$product`, `$categories`
+Zmienne: `$product`
 
-- dodawanie: `POST admin.products.store`, edycja: `PUT admin.products.update`
-- **formularz musi mieć `enctype="multipart/form-data"`**
-- pola: `name`, `slug`, `sku`, `category_id`, `short_description`, `description`,
-  `price` i `compare_at_price` (w złotówkach, np. `199.99`), `stock`, checkboxy `is_active`, `is_featured`
-- upload zdjęć: `images[]` (wiele plików, jpg/png/webp, max 4 MB)
-- **tylko w edycji:** lista obecnych zdjęć (`$product->images`) z przyciskiem usuń
-  (`DELETE admin.products.images.destroy`) i zmianą kolejności (`PATCH admin.products.images.reorder`, pole `images[]` = ID w nowej kolejności)
+- dodawanie: `POST route('admin.products.store')`, edycja: `PUT route('admin.products.update', $product)`
+- **formularz musi mieć `enctype="multipart/form-data"`** (upload zdjęcia)
+- pola: `name` *(wymagane)*, `description`, `price` *(wymagane, np. 199.99)*, `stock` *(wymagane)*, `image` (jpg/png/webp, max 2 MB)
+- przy edycji: podgląd obecnego zdjęcia
+- błędy przy polach
 
-### [ ] `admin/orders/index.blade.php` — lista zamówień
+> Wskazówka: pola można wydzielić do wspólnego pliku, np. `admin/products/_form.blade.php`.
 
-Zmienne: `$orders` (paginacja), `$filters`, `$statuses`, `$paymentStatuses`
+### [ ] `admin/users/index.blade.php` — lista użytkowników (admin)
 
-- filtry: `search` (numer lub e-mail), `status`, `payment_status`, `from`, `to` (daty)
-- tabela: numer, data, klient (e-mail), liczba pozycji, kwota, status, płatność, link „Szczegóły”
+Zmienne: `$users` (paginacja), `$search`
 
-### [ ] `admin/orders/show.blade.php` — szczegóły zamówienia
+- wyszukiwarka (`search` — imię lub e-mail)
+- przycisk „Dodaj użytkownika” → `admin.users.create`
+- tabela: imię, e-mail, rola (`->label()`), data rejestracji
+- akcje: „Pokaż” (`admin.users.show`), „Edytuj” (`admin.users.edit`), „Usuń” (`DELETE admin.users.destroy`)
 
-Zmienne: `$order`, `$allowedStatuses`, `$paymentStatuses`
+### [ ] `admin/users/show.blade.php` — podgląd użytkownika (admin)
 
-- dane klienta (e-mail, telefon, link do konta, jeśli jest `$order->user`)
-- adres dostawy i do faktury, uwagi klienta (`notes`)
-- pozycje zamówienia i kwoty
-- formularz `PATCH admin.orders.update`:
-  - `status` — **tylko statusy z `$allowedStatuses`** (dozwolone przejścia)
-  - `payment_status` — z `$paymentStatuses`
-  - `tracking_number`
-- błąd `@error('status')` (np. niedozwolona zmiana)
+Zmienne: `$user`, `$orders`
 
-### [ ] `admin/coupons/index.blade.php` — lista kodów rabatowych
+- imię, e-mail, rola, data rejestracji
+- lista zamówień użytkownika (numer, data, status, suma)
+- przyciski „Edytuj” i „Usuń”
 
-Zmienne: `$coupons` (paginacja)
+### [ ] `admin/users/create.blade.php` i [ ] `admin/users/edit.blade.php` — formularz użytkownika (admin)
 
-- wyszukiwarka (`search`)
-- tabela: kod, typ (`->label()`), wartość (`formatted_value`), użycia (`used_count` / `max_uses`), ważność (od–do), aktywny
-- akcje: edytuj, usuń
-- przycisk „Dodaj kod”
+Zmienne: `$user`, `$roles`
 
-### [ ] `admin/coupons/create.blade.php` i [ ] `admin/coupons/edit.blade.php` — formularz kodu
+- dodawanie: `POST route('admin.users.store')`, edycja: `PUT route('admin.users.update', $user)`
+- pola: `name`, `email`, `role` (select z `$roles`: wartość `->value`, etykieta `->label()`), `password`, `password_confirmation`
+- przy edycji: podpis „zostaw puste, aby nie zmieniać hasła”
+- błędy przy polach
 
-Zmienne: `$coupon`, `$types`
+### [ ] `admin/orders/index.blade.php` — lista zamówień (admin)
 
-- dodawanie: `POST admin.coupons.store`, edycja: `PUT admin.coupons.update`
-- pola: `code`, `type` (procentowy / kwotowy — z `$types`), `value` (procent 1–100 albo kwota w zł),
-  `min_order_amount` (zł), `max_uses`, `starts_at`, `expires_at`, checkbox `is_active`
+Zmienne: `$orders` (paginacja)
 
-### [ ] `admin/users/index.blade.php` — lista użytkowników
+- tabela: numer, data, klient (`->user->name`), suma, status, link „Szczegóły” (`admin.orders.show`)
 
-Zmienne: `$users` (paginacja), `$filters`, `$roles`
+### [ ] `admin/orders/show.blade.php` — szczegóły zamówienia (admin)
 
-- filtry: `search`, `role`
-- tabela: imię, e-mail, rola (`->label()`), liczba zamówień (`orders_count`), suma zamówień (`orders_total`), data rejestracji, link „Szczegóły”
+Zmienne: `$order` (z `items`, `user`), `$statuses`
 
-### [ ] `admin/users/show.blade.php` — szczegóły użytkownika
-
-Zmienne: `$user`, `$orders`, `$roles`
-
-- dane: imię, e-mail, telefon, data rejestracji
-- adresy (`$user->addresses`)
-- zamówienia (`$orders`, paginacja)
-- formularz zmiany roli — `PATCH admin.users.update`, pole `role`
-
-### [ ] `admin/reviews/index.blade.php` — moderacja opinii
-
-Zmienne: `$reviews` (paginacja), `$status`
-
-- zakładki: Oczekujące (`?status=pending`), Zatwierdzone (`?status=approved`), Wszystkie (`?status=all`)
-- tabela: produkt, autor, ocena, tytuł, treść, data
-- akcje: zatwierdź (`PATCH admin.reviews.approve`), ukryj (`PATCH admin.reviews.reject`), usuń (`DELETE admin.reviews.destroy`)
+- dane klienta i dostawy, uwagi
+- pozycje zamówienia i suma
+- formularz zmiany statusu: `PATCH route('admin.orders.update', $order)`, select `status` z `$statuses`
 
 ---
 
-## Checklista — szybki podgląd
+## Checklista
 
-**Wspólne**
+**Layouty**
 - [ ] `layouts/app`
 - [ ] `layouts/admin`
-- [ ] `partials/product-card` *(opcjonalny)*
 
 **Sklep**
-- [ ] `shop/home`
 - [ ] `shop/products/index`
 - [ ] `shop/products/show`
-- [ ] `shop/categories/show`
 - [ ] `shop/cart/index`
 - [ ] `shop/checkout/create`
-- [ ] `shop/checkout/success`
 
 **Logowanie**
 - [ ] `auth/login`
 - [ ] `auth/register`
-- [ ] `auth/forgot-password`
-- [ ] `auth/reset-password`
 
-**Konto klienta**
-- [ ] `account/dashboard`
-- [ ] `account/profile`
-- [ ] `account/addresses/index`
-- [ ] `account/addresses/create`
-- [ ] `account/addresses/edit`
+**Zamówienia klienta**
 - [ ] `account/orders/index`
 - [ ] `account/orders/show`
-- [ ] `account/wishlist`
 
 **Panel admina**
 - [ ] `admin/dashboard`
-- [ ] `admin/categories/index`
-- [ ] `admin/categories/create`
-- [ ] `admin/categories/edit`
 - [ ] `admin/products/index`
 - [ ] `admin/products/create`
 - [ ] `admin/products/edit`
-- [ ] `admin/orders/index`
-- [ ] `admin/orders/show`
-- [ ] `admin/coupons/index`
-- [ ] `admin/coupons/create`
-- [ ] `admin/coupons/edit`
 - [ ] `admin/users/index`
 - [ ] `admin/users/show`
-- [ ] `admin/reviews/index`
+- [ ] `admin/users/create`
+- [ ] `admin/users/edit`
+- [ ] `admin/orders/index`
+- [ ] `admin/orders/show`

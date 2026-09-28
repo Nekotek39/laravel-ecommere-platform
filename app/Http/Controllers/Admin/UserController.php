@@ -4,51 +4,79 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\UpdateUserRequest;
+use App\Http\Requests\Admin\UserRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
+/**
+ * User management (CRUD) - administrators only.
+ */
 class UserController extends Controller
 {
     public function index(Request $request): View
     {
-        $filters = $request->validate([
-            'search' => ['nullable', 'string', 'max:100'],
-            'role' => ['nullable', Rule::enum(UserRole::class)],
-        ]);
+        $search = $request->string('search')->trim()->value();
 
         return view('admin.users.index', [
             'users' => User::query()
-                ->withCount('orders')
-                ->withSum('orders as orders_total', 'total')
-                ->when($filters['search'] ?? null, fn ($q, $search) => $q->where(fn ($q) => $q
+                ->when($search, fn ($query) => $query->where(fn ($query) => $query
                     ->where('name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%")))
-                ->when($filters['role'] ?? null, fn ($q, $role) => $q->where('role', $role))
                 ->latest()
-                ->paginate(config('shop.admin_per_page'))
+                ->paginate(20)
                 ->withQueryString(),
-            'filters' => $filters,
+            'search' => $search,
+        ]);
+    }
+
+    public function create(): View
+    {
+        return view('admin.users.create', [
+            'user' => new User,
             'roles' => UserRole::cases(),
         ]);
+    }
+
+    public function store(UserRequest $request): RedirectResponse
+    {
+        User::query()->create($request->userData());
+
+        return redirect()->route('admin.users.index')->with('success', 'The user has been created.');
     }
 
     public function show(User $user): View
     {
         return view('admin.users.show', [
-            'user' => $user->load('addresses'),
-            'orders' => $user->orders()->withCount('items')->latest()->paginate(10),
+            'user' => $user,
+            'orders' => $user->orders()->latest()->get(),
+        ]);
+    }
+
+    public function edit(User $user): View
+    {
+        return view('admin.users.edit', [
+            'user' => $user,
             'roles' => UserRole::cases(),
         ]);
     }
 
-    public function update(UpdateUserRequest $request, User $user): RedirectResponse
+    public function update(UserRequest $request, User $user): RedirectResponse
     {
-        $user->forceFill(['role' => $request->enum('role', UserRole::class)])->save();
+        $user->update($request->userData());
 
-        return back()->with('success', "The user's role has been changed.");
+        return redirect()->route('admin.users.index')->with('success', 'The user has been updated.');
+    }
+
+    public function destroy(Request $request, User $user): RedirectResponse
+    {
+        if ($user->is($request->user())) {
+            return back()->with('error', 'You cannot delete your own account.');
+        }
+
+        $user->delete();
+
+        return redirect()->route('admin.users.index')->with('success', 'The user has been deleted.');
     }
 }

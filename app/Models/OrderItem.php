@@ -11,18 +11,15 @@ class OrderItem extends Model
         'order_id',
         'product_id',
         'product_name',
-        'sku',
-        'unit_price',
+        'price',
         'quantity',
-        'total',
     ];
 
     protected function casts(): array
     {
         return [
-            'unit_price' => 'integer',
+            'price' => 'decimal:2',
             'quantity' => 'integer',
-            'total' => 'integer',
         ];
     }
 
@@ -33,6 +30,11 @@ class OrderItem extends Model
 
     public function product(): BelongsTo
     {
-        return $this->belongsTo(Product::class)->withTrashed();
+        return $this->belongsTo(Product::class);
+    }
+
+    public function total(): float
+    {
+        return round($this->price * $this->quantity, 2);
     }
 }

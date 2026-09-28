@@ -22,9 +22,8 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        $default = $request->user()->isAdmin() ? route('admin.dashboard') : route('account.dashboard');
-
-        return redirect()->intended($default);
+        // Each role lands on a different page (see User::homeRoute()).
+        return redirect()->intended($request->user()->homeRoute());
     }
 
     public function destroy(Request $request): RedirectResponse
@@ -34,6 +33,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home');
+        return redirect()->route('products.index');
     }
 }

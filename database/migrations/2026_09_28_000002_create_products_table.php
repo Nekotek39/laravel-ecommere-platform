@@ -8,20 +8,20 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('parent_id')->nullable()->constrained('categories')->nullOnDelete();
             $table->string('name');
-            $table->string('slug')->unique();
             $table->text('description')->nullable();
-            $table->boolean('is_active')->default(true);
-            $table->unsignedInteger('position')->default(0);
+            $table->decimal('price', 10, 2);
+            $table->unsignedInteger('stock')->default(0);
+            // Path to the image on the "public" disk
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('products');
     }
 };

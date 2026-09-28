@@ -7,13 +7,11 @@ use App\Models\User;
 
 class OrderPolicy
 {
+    /**
+     * A customer can view only their own orders; an administrator can view all.
+     */
     public function view(User $user, Order $order): bool
     {
         return $user->isAdmin() || $order->user_id === $user->id;
-    }
-
-    public function cancel(User $user, Order $order): bool
-    {
-        return $order->user_id === $user->id && $order->canBeCancelledByCustomer();
     }
 }
