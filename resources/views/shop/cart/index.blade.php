@@ -1,13 +1,14 @@
 @extends('layouts.app', ['title' => 'Koszyk'])
-
+<!--Panel koszyka-->
 @section('content')
 <div class="space-y-6">
     <div class="flex items-center justify-between pb-6 border-b border-gray-200">
         <div>
             <h1 class="text-3xl font-bold text-gray-900">Twój koszyk</h1>
-            <p class="mt-1 text-sm text-gray-500">Przejrzyj wybrane produkty przed złożeniem zamówienia.</p>
+            <p class="mt-1 text-sm text-gray-500">Przejrzyj swoje zamówienie przed finalizacją</p>
         </div>
         <a href="{{ route('products.index') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 flex items-center gap-1">
+            <!--Ikonka strzałki-->
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
             </svg>
@@ -17,15 +18,16 @@
 
     @if($items->isEmpty())
         <div class="text-center py-16 bg-white rounded-2xl border border-gray-200 p-8 shadow-xs">
+            <!--Ikonka koszyka-->
             <svg class="mx-auto h-16 w-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
             </svg>
             <h3 class="mt-4 text-lg font-semibold text-gray-900">Twój koszyk jest pusty</h3>
             <p class="mt-1 text-sm text-gray-500">Nie dodałeś jeszcze żadnych produktów do swojego koszyka.</p>
             <div class="mt-6">
-                <a href="{{ route('products.index') }}" 
+                <a href="{{ route('products.index') }}"
                    class="inline-flex items-center gap-2 px-6 py-3 border border-transparent text-sm font-semibold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 shadow-xs transition-colors">
-                    Przeglądaj produkty
+                    Przeglądaj katalog
                 </a>
             </div>
         </div>
@@ -60,7 +62,7 @@
                                         </a>
                                     </h3>
                                     <div class="text-xs text-gray-500">
-                                        Cena jedn.: <span class="font-medium text-gray-800">{{ number_format($product->price, 2, ',', ' ') }} zł</span>
+                                        Cena za 1 szt.: <span class="font-medium text-gray-800">{{ number_format($product->price, 2, ',', ' ') }} zł</span>
                                     </div>
                                     @if($quantity > $product->stock)
                                         <span class="inline-block text-[11px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded-sm">
@@ -75,13 +77,13 @@
                                 <form method="POST" action="{{ route('cart.update', $product) }}" class="flex items-center gap-2">
                                     @csrf
                                     @method('PATCH')
-                                    <input type="number" 
-                                           name="quantity" 
-                                           value="{{ $quantity }}" 
-                                           min="1" 
-                                           max="99" 
+                                    <input type="number"
+                                           name="quantity"
+                                           value="{{ $quantity }}"
+                                           min="1"
+                                           max="99"
                                            class="w-16 rounded-lg border-gray-300 text-sm font-medium focus:border-indigo-500 focus:ring-indigo-500 shadow-xs text-center py-1.5">
-                                    <button type="submit" 
+                                    <button type="submit"
                                             title="Zaktualizuj ilość"
                                             class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-gray-100 rounded-lg transition-colors">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,8 +101,8 @@
                                 <form method="POST" action="{{ route('cart.destroy', $product) }}">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" 
-                                            title="Usuń z koszyka" 
+                                    <button type="submit"
+                                            title="Usuń z koszyka"
                                             class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -141,7 +143,7 @@
                         </div>
                     </div>
 
-                    <a href="{{ route('checkout.create') }}" 
+                    <a href="{{ route('checkout.create') }}"
                        class="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-xs transition-colors">
                         <span>Przejdź do kasy</span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

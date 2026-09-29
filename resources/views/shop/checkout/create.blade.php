@@ -1,5 +1,5 @@
 @extends('layouts.app', ['title' => 'Finalizacja zamówienia'])
-
+<!--Panel finalizacji zamówienia -->
 @section('content')
 <div class="space-y-6">
     <div class="pb-6 border-b border-gray-200">
@@ -23,11 +23,11 @@
                             Imię i nazwisko <span class="text-red-500">*</span>
                         </label>
                         <div class="mt-1">
-                            <input type="text" 
-                                   id="full_name" 
-                                   name="full_name" 
-                                   required 
-                                   value="{{ old('full_name', $user->name) }}" 
+                            <input type="text"
+                                   id="full_name"
+                                   name="full_name"
+                                   required
+                                   value="{{ old('full_name', $user->name) }}"
                                    class="w-full rounded-lg border @error('full_name') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
                         </div>
                         @error('full_name')
@@ -41,12 +41,12 @@
                             Numer telefonu <span class="text-red-500">*</span>
                         </label>
                         <div class="mt-1">
-                            <input type="text" 
-                                   id="phone" 
-                                   name="phone" 
-                                   required 
+                            <input type="text"
+                                   id="phone"
+                                   name="phone"
+                                   required
                                    placeholder="+48 123 456 789"
-                                   value="{{ old('phone') }}" 
+                                   value="{{ old('phone') }}"
                                    class="w-full rounded-lg border @error('phone') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
                         </div>
                         @error('phone')
@@ -60,12 +60,12 @@
                             Ulica i numer lokalu <span class="text-red-500">*</span>
                         </label>
                         <div class="mt-1">
-                            <input type="text" 
-                                   id="address" 
-                                   name="address" 
-                                   required 
+                            <input type="text"
+                                   id="address"
+                                   name="address"
+                                   required
                                    placeholder="np. ul. Kwiatowa 12/4"
-                                   value="{{ old('address') }}" 
+                                   value="{{ old('address') }}"
                                    class="w-full rounded-lg border @error('address') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
                         </div>
                         @error('address')
@@ -80,12 +80,12 @@
                                 Kod pocztowy <span class="text-red-500">*</span>
                             </label>
                             <div class="mt-1">
-                                <input type="text" 
-                                       id="postal_code" 
-                                       name="postal_code" 
-                                       required 
+                                <input type="text"
+                                       id="postal_code"
+                                       name="postal_code"
+                                       required
                                        placeholder="00-000"
-                                       value="{{ old('postal_code') }}" 
+                                       value="{{ old('postal_code') }}"
                                        class="w-full rounded-lg border @error('postal_code') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
                             </div>
                             @error('postal_code')
@@ -98,12 +98,12 @@
                                 Miejscowość <span class="text-red-500">*</span>
                             </label>
                             <div class="mt-1">
-                                <input type="text" 
-                                       id="city" 
-                                       name="city" 
-                                       required 
+                                <input type="text"
+                                       id="city"
+                                       name="city"
+                                       required
                                        placeholder="np. Warszawa"
-                                       value="{{ old('city') }}" 
+                                       value="{{ old('city') }}"
                                        class="w-full rounded-lg border @error('city') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
                             </div>
                             @error('city')
@@ -118,9 +118,9 @@
                             Uwagi do zamówienia (opcjonalnie)
                         </label>
                         <div class="mt-1">
-                            <textarea id="notes" 
-                                      name="notes" 
-                                      rows="3" 
+                            <textarea id="notes"
+                                      name="notes"
+                                      rows="3"
                                       placeholder="Dodatkowe informacje dla kuriera lub sklepu..."
                                       class="w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-xs text-sm">{{ old('notes') }}</textarea>
                         </div>
@@ -177,7 +177,7 @@
                     </div>
 
                     <!-- Przycisk zatwierdzający -->
-                    <button type="submit" 
+                    <button type="submit"
                             class="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl text-base font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md hover:shadow-lg transition-all focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -186,7 +186,7 @@
                     </button>
 
                     <p class="text-center text-xs text-gray-400">
-                        Klikając powyższy przycisk, składasz wiążące zamówienie w naszym sklepie.
+                        Klikając powyższy przycisk, składasz wiążące zamówienie z obowiązkiem zapłaty.
                     </p>
                 </div>
             </div>

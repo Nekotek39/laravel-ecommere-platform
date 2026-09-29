@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? 'Sklep Internetowy' }} - E-Commerce Platform</title>
+    <title>{{ $title ?? 'Sklep Internetowy' }} - Definitywnie jakiś sklep internetowy</title>
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
@@ -20,16 +20,17 @@
                 <!-- Logo & Linki główne -->
                 <div class="flex items-center gap-8">
                     <a href="{{ route('products.index') }}" class="flex items-center gap-2 text-indigo-600 font-bold text-xl tracking-tight">
+                        <!--Logo-->
                         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                         </svg>
-                        <span>E-Sklep</span>
+                        <span>Patent pending</span>
                     </a>
 
                     <nav class="hidden md:flex items-center gap-6">
-                        <a href="{{ route('products.index') }}" 
+                        <a href="{{ route('products.index') }}"
                            class="text-sm font-medium transition-colors {{ request()->routeIs('products.*') ? 'text-indigo-600' : 'text-gray-600 hover:text-gray-900' }}">
-                            Katalog produktów
+                            Katalog
                         </a>
                     </nav>
                 </div>
@@ -37,8 +38,9 @@
                 <!-- Prawa strona nawigacji -->
                 <div class="flex items-center gap-4">
                     <!-- Koszyk -->
-                    <a href="{{ route('cart.index') }}" 
+                    <a href="{{ route('cart.index') }}"
                        class="relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors">
+                        <!--Ikonka koszyka-->
                         <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                         </svg>
@@ -55,14 +57,14 @@
 
                     @auth
                         <!-- Moje zamówienia -->
-                        <a href="{{ route('account.orders.index') }}" 
+                        <a href="{{ route('account.orders.index') }}"
                            class="text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors hidden sm:inline-block">
                             Moje zamówienia
                         </a>
 
                         <!-- Panel administracyjny (jeśli moderator/admin) -->
                         @if(auth()->user()->canManageProducts())
-                            <a href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('admin.products.index') }}" 
+                            <a href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('admin.products.index') }}"
                                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md bg-amber-100 text-amber-800 hover:bg-amber-200 transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
@@ -79,7 +81,7 @@
                             </span>
                             <form method="POST" action="{{ route('logout') }}" class="inline">
                                 @csrf
-                                <button type="submit" 
+                                <button type="submit"
                                         class="text-sm font-medium text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-md transition-colors">
                                     Wyloguj
                                 </button>
@@ -88,11 +90,11 @@
                     @else
                         <!-- Gość: Logowanie i Rejestracja -->
                         <div class="flex items-center gap-2">
-                            <a href="{{ route('login') }}" 
+                            <a href="{{ route('login') }}"
                                class="text-sm font-medium text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors">
                                 Zaloguj się
                             </a>
-                            <a href="{{ route('register') }}" 
+                            <a href="{{ route('register') }}"
                                class="text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg shadow-xs transition-colors">
                                 Załóż konto
                             </a>
@@ -152,7 +154,7 @@
     <!-- Stopka -->
     <footer class="bg-white border-t border-gray-200 mt-auto py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-gray-500">
-            <p>&copy; {{ date('Y') }} Platforma E-Commerce. Wszelkie prawa zastrzeżone.</p>
+            <p>&copy; {{ date('Y') }} Definitywnie Jakaś Platforma E-Commerce. Wszelkie prawa zastrzeżone.</p>
         </div>
     </footer>
 </body>

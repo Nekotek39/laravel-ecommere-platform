@@ -12,8 +12,8 @@ gdzie w kodzie znajduje się każda funkcja i jakie pytania mogą paść.
 | **Temat** | Sklep internetowy z panelem administracyjnym |
 | **Framework** | Laravel 12 (PHP 8.2), wzorzec MVC |
 | **Baza danych** | MySQL (XAMPP), baza `laravel_ecommerce` |
-| **Widoki** | Blade (szablony Laravela) — opis w `docs/WYMAGANIA-WIDOKOW.md` |
-| **Testy** | PHPUnit — 22 testy automatyczne (`php artisan test`) |
+| **Widoki** | Blade (szablony Laravela) z Tailwind CSS |
+| **Testy** | PHPUnit — 25 testów automatycznych (`php artisan test`) |
 
 **Role użytkowników:**
 

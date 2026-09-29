@@ -19,37 +19,38 @@
             <div class="flex justify-between items-center h-16">
                 <!-- Lewa strona: Logo & Menu -->
                 <div class="flex items-center gap-8">
-                    <a href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('admin.products.index') }}" 
+                    <a href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('admin.products.index') }}"
                        class="flex items-center gap-2 font-bold text-lg text-white tracking-wide">
                         <span class="bg-indigo-600 text-white p-1.5 rounded-lg">
+                            <!--Ikonka zębatki-->
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                             </svg>
                         </span>
-                        <span>Panel Zarządzania</span>
+                        <span>Admin Panel</span>
                     </a>
 
                     <nav class="hidden md:flex items-center gap-1">
                         @if(auth()->user()->isAdmin())
-                            <a href="{{ route('admin.dashboard') }}" 
+                            <a href="{{ route('admin.dashboard') }}"
                                class="px-3 py-2 rounded-md text-sm font-medium transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
                                 Pulpit
                             </a>
                         @endif
 
-                        <a href="{{ route('admin.products.index') }}" 
+                        <a href="{{ route('admin.products.index') }}"
                            class="px-3 py-2 rounded-md text-sm font-medium transition-colors {{ request()->routeIs('admin.products.*') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
                             Produkty
                         </a>
 
                         @if(auth()->user()->isAdmin())
-                            <a href="{{ route('admin.users.index') }}" 
+                            <a href="{{ route('admin.users.index') }}"
                                class="px-3 py-2 rounded-md text-sm font-medium transition-colors {{ request()->routeIs('admin.users.*') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
                                 Użytkownicy
                             </a>
 
-                            <a href="{{ route('admin.orders.index') }}" 
+                            <a href="{{ route('admin.orders.index') }}"
                                class="px-3 py-2 rounded-md text-sm font-medium transition-colors {{ request()->routeIs('admin.orders.*') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white' }}">
                                 Zamówienia
                             </a>
@@ -59,7 +60,7 @@
 
                 <!-- Prawa strona -->
                 <div class="flex items-center gap-4">
-                    <a href="{{ route('products.index') }}" 
+                    <a href="{{ route('products.index') }}"
                        class="text-xs font-medium text-gray-300 hover:text-white flex items-center gap-1 bg-gray-800 hover:bg-gray-700 px-3 py-1.5 rounded-md transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -75,7 +76,7 @@
 
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
-                            <button type="submit" 
+                            <button type="submit"
                                     class="text-xs font-medium text-red-400 hover:text-red-300 bg-red-950/40 hover:bg-red-900/60 border border-red-800/50 px-2.5 py-1.5 rounded-md transition-colors">
                                 Wyloguj
                             </button>
