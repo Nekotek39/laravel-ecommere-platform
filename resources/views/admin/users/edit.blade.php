@@ -35,12 +35,12 @@
                     Imię i nazwisko <span class="text-red-500">*</span>
                 </label>
                 <div class="mt-1">
-                    <input type="text" 
-                           id="name" 
-                           name="name" 
-                           required 
-                           value="{{ old('name', $user->name) }}" 
-                           class="w-full rounded-lg border @error('name') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
+                    <input type="text"
+                           id="name"
+                           name="name"
+                           required
+                           value="{{ old('name', $user->name) }}"
+                           class="w-full p-2 rounded-lg border @error('name') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
                 </div>
                 @error('name')
                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -53,12 +53,12 @@
                     Adres e-mail <span class="text-red-500">*</span>
                 </label>
                 <div class="mt-1">
-                    <input type="email" 
-                           id="email" 
-                           name="email" 
-                           required 
-                           value="{{ old('email', $user->email) }}" 
-                           class="w-full rounded-lg border @error('email') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           required
+                           value="{{ old('email', $user->email) }}"
+                           class="w-full p-2 rounded-lg border @error('email') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
                 </div>
                 @error('email')
                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -71,10 +71,10 @@
                     Rola systemowa <span class="text-red-500">*</span>
                 </label>
                 <div class="mt-1">
-                    <select id="role" 
-                            name="role" 
-                            required 
-                            class="w-full rounded-lg border @error('role') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
+                    <select id="role"
+                            name="role"
+                            required
+                            class="w-full p-2 rounded-lg border @error('role') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
                         @foreach($roles as $role)
                             <option value="{{ $role->value }}" @selected(old('role', $user->role->value) === $role->value)>
                                 {{ $role->label() }}
@@ -101,10 +101,10 @@
                             Nowe hasło (min. 8 znaków)
                         </label>
                         <div class="mt-1">
-                            <input type="password" 
-                                   id="password" 
-                                   name="password" 
-                                   class="w-full rounded-lg border @error('password') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
+                            <input type="password"
+                                   id="password"
+                                   name="password"
+                                   class="w-full p-2 rounded-lg border @error('password') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
                         </div>
                         @error('password')
                             <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -116,10 +116,10 @@
                             Powtórz nowe hasło
                         </label>
                         <div class="mt-1">
-                            <input type="password" 
-                                   id="password_confirmation" 
-                                   name="password_confirmation" 
-                                   class="w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-xs text-sm">
+                            <input type="password"
+                                   id="password_confirmation"
+                                   name="password_confirmation"
+                                   class="w-full p-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-xs text-sm">
                         </div>
                     </div>
                 </div>
@@ -127,11 +127,11 @@
 
             <!-- Przyciski akcji -->
             <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
-                <a href="{{ route('admin.users.index') }}" 
+                <a href="{{ route('admin.users.index') }}"
                    class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
                     Anuluj
                 </a>
-                <button type="submit" 
+                <button type="submit"
                         class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-xs transition-colors">
                     Zapisz zmiany
                 </button>

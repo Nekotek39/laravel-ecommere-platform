@@ -35,12 +35,12 @@
                     Nazwa produktu <span class="text-red-500">*</span>
                 </label>
                 <div class="mt-1">
-                    <input type="text" 
-                           id="name" 
-                           name="name" 
-                           required 
-                           value="{{ old('name', $product->name) }}" 
-                           class="w-full rounded-lg border @error('name') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
+                    <input type="text"
+                           id="name"
+                           name="name"
+                           required
+                           value="{{ old('name', $product->name) }}"
+                           class="w-full p-2 rounded-lg border @error('name') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
                 </div>
                 @error('name')
                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -54,15 +54,15 @@
                         Cena (PLN) <span class="text-red-500">*</span>
                     </label>
                     <div class="mt-1 relative rounded-lg shadow-xs">
-                        <input type="number" 
-                               step="0.01" 
-                               min="0.01" 
+                        <input type="number"
+                               step="0.01"
+                               min="0.01"
                                max="999999.99"
-                               id="price" 
-                               name="price" 
-                               required 
-                               value="{{ old('price', $product->price) }}" 
-                               class="w-full rounded-lg border @error('price') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror text-sm pr-12">
+                               id="price"
+                               name="price"
+                               required
+                               value="{{ old('price', $product->price) }}"
+                               class="w-full p-2 rounded-lg border @error('price') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror text-sm pr-12">
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-400 text-sm">
                             PLN
                         </div>
@@ -77,13 +77,13 @@
                         Stan magazynowy (szt.) <span class="text-red-500">*</span>
                     </label>
                     <div class="mt-1">
-                        <input type="number" 
-                               min="0" 
-                               id="stock" 
-                               name="stock" 
-                               required 
-                               value="{{ old('stock', $product->stock) }}" 
-                               class="w-full rounded-lg border @error('stock') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
+                        <input type="number"
+                               min="0"
+                               id="stock"
+                               name="stock"
+                               required
+                               value="{{ old('stock', $product->stock) }}"
+                               class="w-full p-2 rounded-lg border @error('stock') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
                     </div>
                     @error('stock')
                         <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -107,11 +107,11 @@
                 @endif
 
                 <div class="mt-2">
-                    <input type="file" 
-                           id="image" 
-                           name="image" 
+                    <input type="file"
+                           id="image"
+                           name="image"
                            accept="image/png,image/jpeg,image/webp"
-                           class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                           class="block p-2 w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                 </div>
                 <p class="mt-1 text-xs text-gray-400">Dopuszczalne formaty: JPG, JPEG, PNG, WEBP (maks. 2MB).</p>
                 @error('image')
@@ -125,10 +125,10 @@
                     Opis produktu
                 </label>
                 <div class="mt-1">
-                    <textarea id="description" 
-                              name="description" 
-                              rows="5" 
-                              class="w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-xs text-sm">{{ old('description', $product->description) }}</textarea>
+                    <textarea id="description"
+                              name="description"
+                              rows="5"
+                              class="w-full p-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-xs text-sm">{{ old('description', $product->description) }}</textarea>
                 </div>
                 @error('description')
                     <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -137,11 +137,11 @@
 
             <!-- Przyciski akcji -->
             <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
-                <a href="{{ route('admin.products.index') }}" 
+                <a href="{{ route('admin.products.index') }}"
                    class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
                     Anuluj
                 </a>
-                <button type="submit" 
+                <button type="submit"
                         class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-xs transition-colors">
                     Zapisz zmiany
                 </button>

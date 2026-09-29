@@ -28,7 +28,7 @@
                                    name="full_name"
                                    required
                                    value="{{ old('full_name', $user->name) }}"
-                                   class="w-full rounded-lg border @error('full_name') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
+                                   class="w-full p-2 rounded-lg border @error('full_name') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
                         </div>
                         @error('full_name')
                             <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -47,7 +47,7 @@
                                    required
                                    placeholder="+48 123 456 789"
                                    value="{{ old('phone') }}"
-                                   class="w-full rounded-lg border @error('phone') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
+                                   class="w-full p-2 rounded-lg border @error('phone') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
                         </div>
                         @error('phone')
                             <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -66,7 +66,7 @@
                                    required
                                    placeholder="np. ul. Kwiatowa 12/4"
                                    value="{{ old('address') }}"
-                                   class="w-full rounded-lg border @error('address') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
+                                   class="w-full p-2 rounded-lg border @error('address') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
                         </div>
                         @error('address')
                             <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -86,7 +86,7 @@
                                        required
                                        placeholder="00-000"
                                        value="{{ old('postal_code') }}"
-                                       class="w-full rounded-lg border @error('postal_code') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
+                                       class="w-full p-2 rounded-lg border @error('postal_code') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
                             </div>
                             @error('postal_code')
                                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -104,7 +104,7 @@
                                        required
                                        placeholder="np. Warszawa"
                                        value="{{ old('city') }}"
-                                       class="w-full rounded-lg border @error('city') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
+                                       class="w-full p-2 rounded-lg border @error('city') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
                             </div>
                             @error('city')
                                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -122,7 +122,7 @@
                                       name="notes"
                                       rows="3"
                                       placeholder="Dodatkowe informacje dla kuriera lub sklepu..."
-                                      class="w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-xs text-sm">{{ old('notes') }}</textarea>
+                                      class="w-full p-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-xs text-sm">{{ old('notes') }}</textarea>
                         </div>
                         @error('notes')
                             <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
