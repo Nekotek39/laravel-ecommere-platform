@@ -86,6 +86,7 @@
                                        required
                                        placeholder="00-000"
                                        value="{{ old('postal_code') }}"
+                                       pattern="[0-9]{2}-[0-9]{3}"
                                        class="w-full p-2 rounded-lg border @error('postal_code') border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 @else border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 @enderror shadow-xs text-sm">
                             </div>
                             @error('postal_code')

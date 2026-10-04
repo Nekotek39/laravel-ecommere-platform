@@ -28,7 +28,9 @@ class OrderService
         if ($cart === []) {
             throw ValidationException::withMessages(['cart' => 'Your cart is empty.']);
         }
-
+        if (!preg_match('/^[0-9]{2}-[0-9]{3}$/', $data['postal_code'])) {
+            throw ValidationException::withMessages(['postal_code' => 'The postal code is invalid.']);
+        }
         $order = DB::transaction(function () use ($user, $data, $cart) {
             // Lock the products so two customers cannot buy the last item at the same time.
             $products = Product::query()
