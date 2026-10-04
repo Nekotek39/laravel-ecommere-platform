@@ -38,6 +38,6 @@ class OrderController extends Controller
 
         $order->update($validated);
 
-        return back()->with('success', 'The order status has been updated.');
+        return back()->with('success', 'Status zamówienia został zaktualizowany.');
     }
 }

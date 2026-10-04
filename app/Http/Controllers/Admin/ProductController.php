@@ -38,7 +38,7 @@ class ProductController extends Controller
 
         Product::query()->create($data);
 
-        return redirect()->route('admin.products.index')->with('success', 'The product has been created.');
+        return redirect()->route('admin.products.index')->with('success', 'Produkt został poprawnie dodany.');
     }
 
     public function edit(Product $product): View
@@ -62,13 +62,13 @@ class ProductController extends Controller
 
         $product->update($data);
 
-        return redirect()->route('admin.products.index')->with('success', 'The product has been updated.');
+        return redirect()->route('admin.products.index')->with('success', 'Produkt został poprawnie zaktualizowany.');
     }
 
     public function destroy(Product $product): RedirectResponse
     {
         $product->delete();
 
-        return redirect()->route('admin.products.index')->with('success', 'The product has been deleted.');
+        return redirect()->route('admin.products.index')->with('success', 'Produkt został poprawnie usunięty.');
     }
 }

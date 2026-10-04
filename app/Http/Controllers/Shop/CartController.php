@@ -29,7 +29,7 @@ class CartController extends Controller
 
         $this->cart->add($product, $request->integer('quantity', 1));
 
-        return back()->with('success', "{$product->name} has been added to your cart.");
+        return back()->with('success', "{$product->name} został dodany do koszyka.");
     }
 
     public function update(Request $request, Product $product): RedirectResponse
@@ -40,13 +40,13 @@ class CartController extends Controller
 
         $this->cart->update($product, $request->integer('quantity'));
 
-        return back()->with('success', 'Your cart has been updated.');
+        return back()->with('success', 'Koszyk został zaktualizowany.');
     }
 
     public function destroy(Product $product): RedirectResponse
     {
         $this->cart->remove($product);
 
-        return back()->with('success', "{$product->name} has been removed from your cart.");
+        return back()->with('success', "{$product->name} został usunięty z koszyka.");
     }
 }

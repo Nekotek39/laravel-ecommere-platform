@@ -43,7 +43,7 @@ class UserController extends Controller
     {
         User::query()->create($request->userData());
 
-        return redirect()->route('admin.users.index')->with('success', 'The user has been created.');
+        return redirect()->route('admin.users.index')->with('success', 'Użytkownik został utworzony.');
     }
 
     public function show(User $user): View
@@ -66,7 +66,7 @@ class UserController extends Controller
     {
         $user->update($request->userData());
 
-        return redirect()->route('admin.users.index')->with('success', 'The user has been updated.');
+        return redirect()->route('admin.users.index')->with('success', 'Użytkownik został zaktualizowany.');
     }
 
     public function destroy(Request $request, User $user): RedirectResponse
@@ -77,6 +77,6 @@ class UserController extends Controller
 
         $user->delete();
 
-        return redirect()->route('admin.users.index')->with('success', 'The user has been deleted.');
+        return redirect()->route('admin.users.index')->with('success', 'Użytkownik został usunięty.');
     }
 }

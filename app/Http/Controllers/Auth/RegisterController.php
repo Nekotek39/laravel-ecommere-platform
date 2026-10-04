@@ -26,6 +26,6 @@ class RegisterController extends Controller
         $request->session()->regenerate();
 
         return redirect()->route('products.index')
-            ->with('success', 'Your account has been created. Welcome to the shop!');
+            ->with('success', 'Twoje konto zostało utworzone. Witaj w naszym sklepie!');
     }
 }

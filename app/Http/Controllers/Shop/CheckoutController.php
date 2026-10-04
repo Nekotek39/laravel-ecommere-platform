@@ -17,7 +17,7 @@ class CheckoutController extends Controller
     public function create(Request $request): View|RedirectResponse
     {
         if ($this->cart->isEmpty()) {
-            return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
+            return redirect()->route('cart.index')->with('error', 'Twój koszyk jest pusty.');
         }
 
         return view('shop.checkout.create', [
@@ -32,6 +32,6 @@ class CheckoutController extends Controller
         $order = $orders->placeOrder($request->user(), $request->validated());
 
         return redirect()->route('account.orders.show', $order)
-            ->with('success', "Thank you! Your order #{$order->id} has been placed.");
+            ->with('success', "Dziękujemy! Twoje zamówienie #{$order->id} zostało złożone.");
     }
 }

@@ -29,7 +29,7 @@ class UserRequest extends FormRequest
                 Rule::enum(UserRole::class),
                 function (string $attribute, mixed $value, Closure $fail) use ($user) {
                     if ($user && $user->is($this->user()) && $value !== UserRole::Admin->value) {
-                        $fail('You cannot revoke your own administrator role.');
+                        $fail('Nie możesz odebrać sobie roli administratora.');
                     }
                 },
             ],

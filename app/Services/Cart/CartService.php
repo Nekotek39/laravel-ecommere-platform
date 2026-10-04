@@ -107,7 +107,7 @@ class CartService
     {
         if ($quantity > $product->stock) {
             throw ValidationException::withMessages([
-                'quantity' => "Only {$product->stock} of {$product->name} available.",
+                'quantity' => "Tylko {$product->stock} sztuk produktu {$product->name} jest dostępnych.",
             ]);
         }
     }

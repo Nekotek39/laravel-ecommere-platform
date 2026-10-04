@@ -26,10 +26,10 @@ class OrderService
         $cart = $this->cart->raw();
 
         if ($cart === []) {
-            throw ValidationException::withMessages(['cart' => 'Your cart is empty.']);
+            throw ValidationException::withMessages(['cart' => 'Koszyk jest pusty.']);
         }
         if (!preg_match('/^[0-9]{2}-[0-9]{3}$/', $data['postal_code'])) {
-            throw ValidationException::withMessages(['postal_code' => 'The postal code is invalid.']);
+            throw ValidationException::withMessages(['postal_code' => 'Nieprawidłowy kod pocztowy.']);
         }
         $order = DB::transaction(function () use ($user, $data, $cart) {
             // Lock the products so two customers cannot buy the last item at the same time.
@@ -46,7 +46,7 @@ class OrderService
 
                 if (! $product || $product->stock < $quantity) {
                     throw ValidationException::withMessages([
-                        'cart' => 'Some products in your cart are no longer available in the requested quantity.',
+                        'cart' => 'Niektóre produkty w Twoim koszyku nie są już dostępne w żądanej ilości.',
                     ]);
                 }
 
